@@ -1,0 +1,3 @@
+# Ignore all directories and files in the Scripts directory except for the PKGBUILD file.
+Scripts/*
+!Scripts/PKGBUILD

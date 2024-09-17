@@ -1,0 +1,32 @@
+pkgname=ballerina
+pkgver=2201.10.0
+pkgrel=2201
+_pkg=${pkgname}-${pkgver}
+pkgdesc="an open source programming language and platform for cloud-era application programmers to easily write software that just works"
+
+arch=('any')
+url="https://ballerina.io/"
+license=('Apache')
+depends=('jre17-openjdk')
+optdepends=('docker' 'bash' 'kubectl' 'kubernetes-helm')
+source=(${_pkg}.zip::https://dist.ballerina.io/downloads/${pkgver}/ballerina-${pkgver}-swan-lake-linux-x64.rpm)
+sha256sums=('ab8a91af8b5a43b643cd6c811418205b465540a5cdb4c78117ff8e81751506c0')
+
+_licensedir=usr/share/licenses/${pkgname}
+_docdir=usr/share/doc/${pkgname}
+_appdir=usr/share/${pkgname}/${_pkg}
+_bindir=usr/bin/
+
+package() {
+  echo "${pkgdir} ${srcdir}"
+  install --directory --mode=755 ${pkgdir}/${_bindir}
+  install --directory --mode=755 ${pkgdir}/${_appdir}
+  install --directory --mode=755 ${pkgdir}/${_docdir}
+  install -D --mode=755 ${srcdir}/usr/lib64/${pkgname}/distributions/${_pkg}/LICENSE ${pkgdir}/${_licensedir}/LICENSE
+  install -D --mode=644 ${srcdir}/usr/lib64/${pkgname}/distributions/${_pkg}/README.md ${pkgdir}/${_docdir}/README.md
+  cp --archive --recursive ${srcdir}/usr/lib64/${pkgname}/distributions/${_pkg}/docs/* ${pkgdir}/${_docdir}/
+  cp --archive --recursive ${srcdir}/usr/lib64/${pkgname}/* ${pkgdir}/${_appdir}/
+  chmod --recursive a+r ${pkgdir}/${_appdir}/distributions/${_pkg}/lib
+  ln --symbolic --force /${_appdir}/bin/ballerina ${pkgdir}/usr/bin/ballerina
+  ln --symbolic --force /usr/lib/jvm/java-17-openjdk/jre ${pkgdir}/${_appdir}/dependencies/jdk-17.0.7+7-jre
+}
